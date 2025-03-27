@@ -236,7 +236,7 @@ const SearchBox = ({
         }
       >
         {!isChatPage && (
-          <p className={styles.searchTitle}>Where knowledge begins</p>
+          <p className={styles.searchTitle}>Devops Auto Pilot</p>
         )}
 
         {!isChatPage && (

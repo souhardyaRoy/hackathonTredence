@@ -92,10 +92,10 @@ const Home = () => {
           </div>
 
           <div className={styles.footerContainer}>
-            <div className={styles.themeToggleContainer}>
+            {/* <div className={styles.themeToggleContainer}>
               <span className={styles.text}>Theme</span>
               <ThemeToggle />
-            </div>
+            </div> */}
 
             <div className={styles.flexContainer}>
               <span className={styles.userName}>{userInfo?.name}</span>

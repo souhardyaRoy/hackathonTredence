@@ -22,6 +22,7 @@ import Features4 from "@/assets/illustrations/features-4.png";
 
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import b from "../../../assets/logo/devopsAPLogo.jpg"
 
 const { Meta } = Card;
 
@@ -36,11 +37,12 @@ const Landing = () => {
         <div className={styles.headerContainer}>
           {appInfo && (
             <>
-              <img src={appInfo?.logo} className={styles.logo} />
+              <img src={b.src} className={styles.logo} />
               <p className={styles.appDescription}>{appInfo.description}</p>
               <div className={styles.buttonContainer}>
                 <Button
                   className={styles.buttons}
+                  style={{ backgroundColor: "orange", borderColor: "orange", color: "white" }} 
                   type={"primary"}
                   onClick={() => router.push("/login")}
                 >
@@ -60,14 +62,14 @@ const Landing = () => {
 
         <Image
           className={styles.heroImage}
-          src={HeroImage2}
+          src={b}
           alt="Hero Illustration"
           layout="responsive"
         />
       </header>
       <div className={styles.body}>
         <section className={styles.section1}>
-          <p className={styles.title}>Explore Data Like Never Before</p>
+          <p className={styles.title}>Explore Devops Automation Like Never Before</p>
           <div className={styles.sectionCards}>
             <Row>
               <Col span={6} className={styles.colStyle}>
@@ -176,26 +178,26 @@ const Landing = () => {
               <p className={styles.title2}>
                 Built using HEXBANE 🐦‍🔥 Architecture
               </p>
-              <a
+              {/* <a
                 href="https://github.com/shivaraj65/hexbane"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 Visit HEXBANE
-              </a>
+              </a> */}
               <p className={styles.description2}>--Still under Development--</p>
               <p className={styles.description3}>
-                Author : Shivaraj [Team Lead]
+                Author : Imdad [Team Lead]
               </p>
               <p className={styles.description2}>
-                Hexbane is a development accelerator module to spin up a
+                Devops Autopilot is a development accelerator module to spin up a
                 application in a very quick duration of time
               </p>
             </div>
           </div>
         </section>
         <section className={styles.section3}>
-          <p className={styles.title}>Meet the Minds Behind DataCompass</p>
+          <p className={styles.title}>Meet the Minds Behind DevOps Automation</p>
           <div className={styles.mindsContainer}>
             <div className={styles.authorCard}>
               <Image
@@ -205,7 +207,7 @@ const Landing = () => {
                 layout="responsive"
               />
               <div className={styles.Content}>
-                <p className={styles.title}>Shivaraj - Dev Sorcerer</p>
+                <p className={styles.title}>Souhardya & Pavan - Dev Sorcerer</p>
                 <p className={styles.description}>
                   Orchestrates the entire app development, from backend logic to
                   front-end magic.
@@ -214,7 +216,7 @@ const Landing = () => {
             </div>
             <div className={styles.authorCard}>
               <div className={styles.Content}>
-                <p className={styles.title}>kishore - Experience Alchemist</p>
+                <p className={styles.title}>Imdad & Srikanth - Experience Alchemist</p>
                 <p className={styles.description}>
                   Crafts engaging user journeys, blending design and
                   functionality seamlessly.
@@ -235,7 +237,7 @@ const Landing = () => {
                 layout="responsive"
               />
               <div className={styles.Content}>
-                <p className={styles.title}>Uvais - Data Whisperer</p>
+                <p className={styles.title}>Archana & Uma - Data Whisperer</p>
                 <p className={styles.description}>
                   Tames and integrates data, ensuring it speaks perfectly with
                   the LLM.
@@ -246,7 +248,7 @@ const Landing = () => {
         </section>
 
         <section className={styles.section4}>
-          <p className={styles.title}>Get Started with DataCompass</p>
+          <p className={styles.title}>Get Started with Devops Automation</p>
           <div className={styles.cta}>
             <div className={styles.text}>
               <p>

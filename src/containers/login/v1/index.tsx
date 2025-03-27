@@ -127,6 +127,7 @@ const Login = () => {
           </div>
           <Button
             type="primary"
+            style={{ backgroundColor: "orange", borderColor: "orange", color: "white" }} 
             block
             size={"large"}
             disabled={login.loading}

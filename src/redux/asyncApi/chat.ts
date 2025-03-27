@@ -49,7 +49,8 @@ export interface simpleChatRequest{
 export const simpleChat = createAsyncThunk<any, simpleChatRequest, { rejectValue: string }>(
   "api/simpleChat",
   async (simpleChatRequest, { rejectWithValue, dispatch, getState }) => {
-    console.log("simple chat request",simpleChatRequest)
+    console.log("simple chat request", simpleChatRequest);
+    
     try {
       const state = getState() as RootState;
 
@@ -64,107 +65,71 @@ export const simpleChat = createAsyncThunk<any, simpleChatRequest, { rejectValue
         })
       );
 
-      //101 need to change for file uplaod. / multi modal switch...
+      // Extracting chat history
       const chatHistory =
         state.chat.currentChat &&
         state.chat.currentChat.map((item) => {
           return { role: item.role, content: item.content };
         });
+
       const question =
         state.chat.currentChat &&
         state.chat.currentChat[state.chat.currentChat.length - 1].content;
+
       const model = state.chat.chatModel.value;
       const temperature = state.chat.chatTemperature;
 
-      //additional parameters for the chat
-      const isRag = state.chat.chatType === "rag";
-      const ragType = state.chat.rag.value;
-      const ragTypeExternal = state.chat.rag.value !== "in_memory";
-      const pineconeKey = state.app.userInfo.rag.pinecone;
+      // Additional parameters for Gemini API
+      const isSQL = state.chat.chatType === "data_wizard";
 
-      const isSQL = state.chat.chatType === "data_wizard";      
-
-      // const schemaString = `sales_table: ordernumber (integer), quantityordered (integer), priceeach (numeric), orderlinenumber (integer), sales (numeric), orderdate (timestamp with time zone), status (character varying), qtr_id (integer), month_id (integer), year_id (integer), productline (character varying), msrp (numeric), productcode (character varying), customername (character varying), phone (character varying), addressline1 (character varying), addressline2 (character varying), city (character varying), state (character varying), postalcode (character varying), country (character varying), territory (character varying), contactlastname (character varying), contactfirstname (character varying), dealsize (character varying).`;
-
+      // Constructing the Gemini API payload
       const payload = {
-        chatHistory,
-        question,
-        model,
-        temperature,
-        ...(isSQL && simpleChatRequest ? { schemaString:simpleChatRequest.schemaString } : {}),
-        ...(isRag && ragTypeExternal ? { pineconeKey } : {}),
+        contents: [
+          {
+            parts: [
+              {
+                text: Array.isArray(question) ? question[0]?.text ?? "" : "",
+              },
+            ],
+          },
+        ],
       };
+      
 
-      const response = await fetch("/api/simpleChat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      // API call to Google Gemini
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDfKacwjcGtcGu17KszTRTfYAAETtpzLxA`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
-      if (!response.body) {
-        throw new Error("ReadableStream not supported.");
+      if (!response.ok) {
+        throw new Error("Failed to fetch response from Gemini API");
       }
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder("utf-8");
-      let done = false;
+      const responseData = await response.json();
+      
+      // Extracting the AI response
+      const aiResponse =
+        responseData?.candidates?.[0]?.content?.parts?.[0]?.text || "No response received";
 
-      while (!done) {
-        const { value, done } = await reader.read();
+      // Dispatch the response to Redux store
+      dispatch(onStreaming(aiResponse));
 
-        if (done) {
-          console.log("final done trigger");
-          await dispatch(chatSave());
-          break;
-        }
+      await dispatch(chatSave());
 
-        if (value) {
-          const chunk = decoder.decode(value, { stream: true });
-          chunk.split("\n").forEach(async (line: string) => {
-            if (line) {
-              try {
-                let newLine: string = line;
-                if (line.startsWith("data: ")) {
-                  newLine = line.substring(6);
-                }
-                if (newLine.trim() === "[DONE]") {
-                  console.log("done triggered");
-
-                  // return;
-                } else if (newLine.trim() === "[ERROR]") {
-                  return rejectWithValue("ERROR in Streaming");
-                } else {
-                  try {
-                    let parsedData = JSON.parse(newLine);
-                    if (parsedData) {
-                      dispatch(onStreaming(parsedData?.kwargs?.content || ""));
-                      if (parsedData?.kwargs?.usage_metadata) {
-                        await dispatch(
-                          onMetricsCapture(parsedData?.kwargs?.usage_metadata)
-                        );
-                      }
-                    }
-                  } catch (error) {
-                    console.log("Invalid JSON");
-                  }
-                }
-              } catch (error) {
-                console.error("Error parsing JSON:", error);
-              }
-            }
-          });
-        }
-      }
     } catch (error) {
       const err = error as AxiosError<ApiError>;
-      return rejectWithValue(
-        err.response?.data?.message || "An error occurred"
-      );
+      return rejectWithValue(err.response?.data?.message || "An error occurred");
     }
   }
 );
+
 
 export const chatSave = createAsyncThunk<
   ApiResponse,

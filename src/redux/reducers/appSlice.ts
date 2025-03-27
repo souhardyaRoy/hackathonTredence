@@ -12,7 +12,7 @@ import {
 } from "@/utils/types/appTypes";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { loginApi, signupApi, updateUserApi } from "../asyncApi/users";
-
+import b from "../../assets/logo/devopsAPLogo.jpg"
 interface app {
   appInfo: appInfotypes | null;
   // userInfo: userInfotypes | null;
@@ -25,10 +25,10 @@ interface app {
 
 const initialState: app = {
   appInfo: {
-    name: "DataCompass",
+    name: "DevOpsAutoPilot",
     logo: "logo/png/logo-no-background.png",
     description:
-      "Your ultimate guide in navigating and making sense of complex data landscapes with precision and ease.",
+      "Your ultimate guide in navigating and making sense of complex DevOps landscapes with precision and ease.",
   },
   userInfo: null,
   signup: {
