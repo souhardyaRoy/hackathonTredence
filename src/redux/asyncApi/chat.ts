@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios, { AxiosError, AxiosResponse } from "axios";
+let api_key = process.env.NEXT_PUBLIC_API_KEY
 import {
   addNewMessage,
   onMetricsCapture,
@@ -98,7 +99,7 @@ export const simpleChat = createAsyncThunk<any, simpleChatRequest, { rejectValue
 
       // API call to Google Gemini
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDfKacwjcGtcGu17KszTRTfYAAETtpzLxA`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${api_key}`,
         {
           method: "POST",
           headers: {
